@@ -1,14 +1,15 @@
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import Image from "next/image";
 
 const REPO_NAME = "dev-portfolio-posts";
 const BASE_RAW_URL = `https://raw.githubusercontent.com/AndyAshley/${REPO_NAME}/main/content/posts`;
 
 export async function generateStaticParams() {
   const res = await fetch(`https://api.github.com/repos/AndyAshley/${REPO_NAME}/contents/content/posts`);
-  const postFolders = await res.json();
-
-  return postFolders.map((folder: any) => ({
+  const postFolders: { name: string }[] = await res.json();
+    
+  return postFolders.map((folder) => ({
     slug: folder.name,
   }));
 }
@@ -60,9 +61,9 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
       <p className="text-gray-500">
         {metadata.date} | {metadata.category} | {metadata.author}
       </p>
-      {metadata.thumbnail && (
-        <img src={metadata.thumbnail} alt={metadata.title} className="w-full rounded-md mb-4" />
-      )}
+        {metadata.thumbnail && (
+            <Image src={metadata.thumbnail} alt={metadata.title} width={800} height={400} className="w-full rounded-md mb-4" />
+        )}
       <div>
         <Markdown remarkPlugins={[remarkGfm]}>{content}</Markdown>
       </div>

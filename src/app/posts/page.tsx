@@ -6,10 +6,10 @@ const BASE_RAW_URL = `https://raw.githubusercontent.com/AndyAshley/${REPO_NAME}/
 async function fetchPosts() {
   const res = await fetch(`https://api.github.com/repos/AndyAshley/${REPO_NAME}/contents/content/posts`);
   if (!res.ok) throw new Error("Failed to fetch post list");
-  const postFolders = await res.json();
+  const postFolders: { name: string }[] = await res.json();
 
   const posts = await Promise.all(
-    postFolders.map(async (folder: any) => {
+    postFolders.map(async (folder) => {
       const metaRes = await fetch(`${BASE_RAW_URL}/${folder.name}/postMeta.json`);
       if (!metaRes.ok) return null;
       const metadata = await metaRes.json();
